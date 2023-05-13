@@ -21,8 +21,8 @@ class NavigationCubit extends Cubit<NavigationState> {
       case NavBarItem.vouchers:
         emit(const NavigationState(navBarItem: NavBarItem.vouchers, index: 1));
         break;
-      case NavBarItem.wishlish:
-        emit(const NavigationState(navBarItem: NavBarItem.wishlish, index: 2));
+      case NavBarItem.wishlist:
+        emit(const NavigationState(navBarItem: NavBarItem.wishlist, index: 2));
         break;
       case NavBarItem.profile:
         emit(const NavigationState(navBarItem: NavBarItem.profile, index: 3));

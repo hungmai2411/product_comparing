@@ -10,7 +10,10 @@ showBottomDialog(BuildContext context, Widget child) async {
     ),
     backgroundColor: Colors.white,
     builder: (context) {
-      return child;
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        child: child,
+      );
     },
   );
 }

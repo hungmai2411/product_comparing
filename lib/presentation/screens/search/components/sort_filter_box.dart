@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/images.dart';
 import 'package:compare_product/presentation/res/style.dart';
@@ -64,11 +66,15 @@ class SortFilterBox extends StatelessWidget {
     }
   }
 
-  void openFilterDialog(BuildContext context) {
-    showBottomDialog(
-      context,
-      const BoxFilter(),
-    );
+  void openFilterDialog(BuildContext context) async {
+    try {
+      final result = await showBottomDialog(
+        context,
+        const BoxFilter(),
+      );
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Widget itemSortFilter(String image, String name, VoidCallback onTap) {

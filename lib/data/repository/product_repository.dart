@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:compare_product/data/environment.dart';
+import 'package:compare_product/data/interfaces/i_service_api.dart';
 import 'package:compare_product/data/models/product.dart';
 import 'package:http/http.dart' as http;
 
-class ProductRepository {
+class ProductRepository extends IServiceAPI {
+  String urlRegister = 'auth/register';
+
   Future<List<Product>> searchProduct(String textSearch) async {
     List<Product> productsFromGearVN = [];
     List<Product> productsFromPhongVu = [];
@@ -14,7 +17,7 @@ class ProductRepository {
     //try {
     productsFromGearVN = await crawlDataGearVN(textSearch);
     productsFromPhongVu = await crawlDataPhongVu(textSearch);
-    productsFromHoangHa = await crawlDataHoangHa(textSearch);
+    //productsFromHoangHa = await crawlDataHoangHa(textSearch);
     // } catch (e) {
     //   log('search product: $e');
     // }
@@ -22,7 +25,8 @@ class ProductRepository {
     List<Product> results = [];
     results.addAll(productsFromPhongVu);
     results.addAll(productsFromGearVN);
-    results.addAll(productsFromHoangHa);
+
+    ///results.addAll(productsFromHoangHa);
 
     return results;
   }
@@ -369,4 +373,21 @@ class ProductRepository {
 
     return result;
   }
+
+  @override
+  convertToObject(value) {
+    throw UnimplementedError();
+  }
+
+  // Future<void> logout() async {
+  //   try {
+  //     await apiServices.delete(
+  //       urlLogout,
+  //       {},
+  //       _appData.headers,
+  //     );
+  //   } catch (e) {
+  //     log('Error logout: $e');
+  //   }
+  // }
 }

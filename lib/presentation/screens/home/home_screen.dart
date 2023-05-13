@@ -1,10 +1,8 @@
-import 'package:compare_product/data/models/product.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/dimensions.dart';
 import 'package:compare_product/presentation/res/style.dart';
 import 'package:compare_product/presentation/screens/search/search_screen.dart';
 import 'package:compare_product/presentation/widgets/box_search.dart';
-import 'package:compare_product/presentation/widgets/item_product.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

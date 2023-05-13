@@ -1,9 +1,12 @@
 import 'package:compare_product/data/models/product.dart';
+import 'package:compare_product/data/models/wishlist.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/dimensions.dart';
 import 'package:compare_product/presentation/res/style.dart';
+import 'package:compare_product/presentation/screens/product_detail/components/feature_details.dart';
+import 'package:compare_product/presentation/screens/product_detail/components/item_chip.dart';
 import 'package:compare_product/presentation/screens/product_detail/components/item_other_price.dart';
-import 'package:compare_product/presentation/screens/product_detail/components/item_technical_info.dart';
+import 'package:compare_product/presentation/screens/product_detail/components/price_history.dart';
 import 'package:compare_product/presentation/screens/product_detail/components/product_alert.dart';
 import 'package:compare_product/presentation/screens/receive_alert/receive_alert_screen.dart';
 import 'package:compare_product/presentation/screens/web_view/web_view_product_screen.dart';
@@ -25,10 +28,18 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  String contentChip = "Features & Details";
+  List<String> chipContents = [
+    "Features & Details",
+    "Price History",
+  ];
+
+  ProductBloc get _bloc => BlocProvider.of<ProductBloc>(context);
+
   @override
   void initState() {
     super.initState();
-    context.read<ProductBloc>().add(ProductFetched(product: widget.product));
+    _bloc.add(ProductFetched(product: widget.product));
   }
 
   @override
@@ -51,11 +62,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
         actions: [
           GestureDetector(
-            child: const Padding(
-              padding: EdgeInsets.only(right: kPaddingHorizontal),
-              child: Icon(
-                Icons.favorite_border_outlined,
-                color: AppColors.primary,
+            onTap: loveProduct,
+            child: Padding(
+              padding: const EdgeInsets.only(right: kPaddingHorizontal),
+              child: BlocBuilder<ProductBloc, ProductState>(
+                builder: (context, state) {
+                  if (state is ProductLoadedSuccess) {
+                    if (state.isLoved) {
+                      return const Icon(
+                        Icons.favorite_rounded,
+                        color: AppColors.primary,
+                      );
+                    } else {
+                      return const Icon(
+                        Icons.favorite_border_outlined,
+                        color: AppColors.primary,
+                      );
+                    }
+                  }
+                  return const Icon(
+                    Icons.favorite_border_outlined,
+                    color: AppColors.primary,
+                  );
+                },
               ),
             ),
           ),
@@ -173,29 +202,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         child: const ProductAlert(),
                       ),
                     ),
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+                      child: Divider(color: AppColors.text),
+                    ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Features & Details',
-                        style: AppStyles.bold,
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          ...chipContents.map(
+                            (e) => Expanded(
+                              child: ItemChip(
+                                content: e,
+                                isSelected: contentChip == e,
+                                callback: (content) {
+                                  setState(() {
+                                    contentChip = content;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          List<String> props =
-                              newProduct.technicalInfo!.keys.toList();
-                          List<String> descriptions =
-                              newProduct.technicalInfo!.values.toList();
-                          return ItemTechnicalInfo(
-                            prop: props[index],
-                            description: descriptions[index],
-                            index: index,
-                          );
-                        },
-                        itemCount: newProduct.technicalInfo!.length,
-                      ),
-                    )
+                    const SizedBox(height: 5),
+                    contentChip == "Features & Details"
+                        ? FeatureDetails(
+                            technicalInfo: newProduct.technicalInfo!)
+                        : const PriceHistory(),
                   ],
                 ),
               ),
@@ -218,5 +254,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         },
       ),
     );
+  }
+
+  void loveProduct() {
+    Wishlist wishlist = Wishlist(
+      url: widget.product.url!,
+      image: widget.product.imgUrl!,
+      name: widget.product.name!,
+    );
+    _bloc.add(ProductLoved(wishlist: wishlist));
   }
 }

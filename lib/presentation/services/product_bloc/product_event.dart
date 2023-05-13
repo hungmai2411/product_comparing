@@ -15,3 +15,12 @@ class ProductFetched extends ProductEvent {
   @override
   List<Object> get props => [product];
 }
+
+class ProductLoved extends ProductEvent {
+  final Wishlist wishlist;
+
+  const ProductLoved({required this.wishlist});
+
+  @override
+  List<Object> get props => [wishlist];
+}

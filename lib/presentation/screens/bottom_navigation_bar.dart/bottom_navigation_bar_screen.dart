@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:compare_product/presentation/enum/enum.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/screens/home/home_screen.dart';
+import 'package:compare_product/presentation/screens/wish_list/wish_list_screen.dart';
 import 'package:compare_product/presentation/services/bottom_navigation_bloc/cubit/navigation_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,8 +40,8 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
           return HomeScreen();
         } else if (state.navBarItem == NavBarItem.vouchers) {
           return Container();
-        } else if (state.navBarItem == NavBarItem.wishlish) {
-          return Container();
+        } else if (state.navBarItem == NavBarItem.wishlist) {
+          return WishListScreen();
         }
         return Container();
       }),
@@ -74,7 +75,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                 color:
                     state.index == 2 ? AppColors.primary : AppColors.secondary,
               ),
-              label: 'Wishlish',
+              label: 'Wishlist',
             ),
             BottomNavigationBarItem(
               icon: Icon(
@@ -95,7 +96,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
                   .getNavBarItem(NavBarItem.vouchers);
             } else if (index == 2) {
               BlocProvider.of<NavigationCubit>(context)
-                  .getNavBarItem(NavBarItem.wishlish);
+                  .getNavBarItem(NavBarItem.wishlist);
             } else {
               BlocProvider.of<NavigationCubit>(context)
                   .getNavBarItem(NavBarItem.profile);

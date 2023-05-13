@@ -1,4 +1,6 @@
 import 'package:compare_product/data/repository/product_repository.dart';
+import 'package:compare_product/data/repository/wishlist_repository.dart';
+import 'package:compare_product/data/service/db_helpers.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/routes/main_routes.dart';
 import 'package:compare_product/presentation/routes/routes.dart';
@@ -6,6 +8,7 @@ import 'package:compare_product/presentation/screens/bottom_navigation_bar.dart/
 import 'package:compare_product/presentation/screens/home/home_screen.dart';
 import 'package:compare_product/presentation/services/product_bloc/product_bloc.dart';
 import 'package:compare_product/presentation/services/search_bloc/search_bloc.dart';
+import 'package:compare_product/presentation/services/wishlist_bloc/wishlist_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +45,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ProductBloc>(
           create: (context) => ProductBloc(
             ProductRepository(),
+            WishlistRepository(dbHelper: DbHelper()),
+          ),
+        ),
+        BlocProvider<WishlistBloc>(
+          create: (context) => WishlistBloc(
+            WishlistRepository(dbHelper: DbHelper()),
           ),
         ),
       ],
