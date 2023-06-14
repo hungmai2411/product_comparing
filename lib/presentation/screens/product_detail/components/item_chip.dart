@@ -21,6 +21,7 @@ class ItemChip extends StatelessWidget {
         callback(content);
       },
       child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: !isSelected ? const Color(0xFFF6F6F6) : AppColors.primary,
@@ -29,7 +30,8 @@ class ItemChip extends StatelessWidget {
         child: Text(
           content,
           textAlign: TextAlign.center,
-          style: AppStyles.semibold,
+          overflow: TextOverflow.ellipsis,
+          style: AppStyles.semibold.copyWith(fontSize: 14),
         ),
       ),
     );

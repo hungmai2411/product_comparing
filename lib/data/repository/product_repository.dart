@@ -4,29 +4,36 @@ import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:compare_product/data/environment.dart';
 import 'package:compare_product/data/interfaces/i_service_api.dart';
 import 'package:compare_product/data/models/product.dart';
+import 'package:compare_product/data/network/base_api_service.dart';
+import 'package:compare_product/data/network/network_api_service.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository extends IServiceAPI {
-  String urlRegister = 'auth/register';
+  String urlOrderProduct =
+      'https://compareproductserver-production.up.railway.app/v1/order/create/';
+  final BaseApiServices _apiServices = NetworkApiService();
 
   Future<List<Product>> searchProduct(String textSearch) async {
     List<Product> productsFromGearVN = [];
     List<Product> productsFromPhongVu = [];
     List<Product> productsFromHoangHa = [];
+    //List<Product> productsFromTiki = [];
 
-    //try {
-    productsFromGearVN = await crawlDataGearVN(textSearch);
-    productsFromPhongVu = await crawlDataPhongVu(textSearch);
-    //productsFromHoangHa = await crawlDataHoangHa(textSearch);
-    // } catch (e) {
-    //   log('search product: $e');
-    // }
+    try {
+      productsFromGearVN = await crawlDataGearVN(textSearch);
+      productsFromPhongVu = await crawlDataPhongVu(textSearch);
+      productsFromHoangHa = await crawlDataHoangHa(textSearch);
+      //productsFromTiki = await crawlDataTiki(textSearch);
+    } catch (e) {
+      log('search product: $e');
+    }
 
     List<Product> results = [];
-    results.addAll(productsFromPhongVu);
-    results.addAll(productsFromGearVN);
 
-    ///results.addAll(productsFromHoangHa);
+    results.addAll(productsFromGearVN);
+    results.addAll(productsFromPhongVu);
+    results.addAll(productsFromHoangHa);
+    //results.addAll(productsFromTiki);
 
     return results;
   }
@@ -96,6 +103,68 @@ class ProductRepository extends IServiceAPI {
     return products;
   }
 
+  Future<List<Product>> crawlDataTiki(String keyword) async {
+    String parsedKeyword = keyword.replaceAll(" ", "%20");
+    String url = '$tikiURL$parsedKeyword';
+    log("tiki url: $url");
+    List<Product> products = [];
+
+    final responseFromTiki = await http.get(Uri.parse(url));
+
+    final soup = BeautifulSoup(responseFromTiki.body);
+    final items = soup.findAll('div');
+
+    for (var item in items) {
+      final urlTag = item.find('div',
+          class_: "style__ProductLink-sc-qg694h-1 jVKZFk product-item");
+      final url = urlTag!.a!['href'];
+      final name = item.find('div', class_: 'ie3A+n bM+7UW Cve6sh')?.text ?? '';
+
+      final imageTag = item.find(
+        'img',
+        class_: '_7DTxhh vc8g9F',
+      );
+
+      final imgUrl = imageTag!['src']!;
+
+      final priceTags = item.find('div', class_: 'hpDKMN');
+
+      String originalPrice, discountPrice;
+
+      if (priceTags!.children.length > 2) {
+        originalPrice = priceTags.children[0].text;
+        discountPrice = priceTags.children[2].children[1].text;
+      } else {
+        originalPrice = priceTags.children[1].text;
+        discountPrice = "";
+      }
+
+      originalPrice = originalPrice.replaceAll('.', '');
+
+      int index = originalPrice.indexOf("₫");
+
+      int newOriginalPrice =
+          int.parse(originalPrice.substring(index + 1, originalPrice.length));
+      int newDiscountPrice = 0;
+
+      if (discountPrice.isNotEmpty) {
+        newDiscountPrice = int.parse(discountPrice);
+      }
+
+      Product product = Product(
+        imgUrl: imgUrl,
+        name: name,
+        originalPrice: newOriginalPrice,
+        discountPrice: newDiscountPrice,
+        shopName: 'Shopee',
+        url: "https://gearvn.com${url!}",
+      );
+      products.add(product);
+    }
+
+    return products;
+  }
+
   Future<List<Product>> crawlDataHoangHa(String keyword) async {
     String parsedKeyword = keyword.replaceAll("/", "%2F");
     String parsedNextKeyword = parsedKeyword.replaceAll(" ", "+");
@@ -110,10 +179,10 @@ class ProductRepository extends IServiceAPI {
 
     final items = soup.findAll('div', class_: 'col-content lts-product');
 
-    for (var item in items) {
+    for (var item in items[0].contents) {
       final urlTag = item.find('div', class_: "img");
       final url = urlTag!.a!['href'];
-      final name = item.find('div', class_: 'info')?.text ?? '';
+      final name = item.find('div', class_: 'info')?.text.trimLeft() ?? '';
 
       final imgUrl = urlTag.a!.children[0]['src'];
 
@@ -125,7 +194,7 @@ class ProductRepository extends IServiceAPI {
         originalPrice = priceTags.children[1].text;
         discountPrice = priceTags.children[0].text;
       } else {
-        originalPrice = priceTags.children[1].text;
+        originalPrice = priceTags.children[0].text;
         discountPrice = "";
       }
 
@@ -379,15 +448,26 @@ class ProductRepository extends IServiceAPI {
     throw UnimplementedError();
   }
 
-  // Future<void> logout() async {
-  //   try {
-  //     await apiServices.delete(
-  //       urlLogout,
-  //       {},
-  //       _appData.headers,
-  //     );
-  //   } catch (e) {
-  //     log('Error logout: $e');
-  //   }
-  // }
+  Future<void> orderProduct(String link, String mail, int min, int max) async {
+    try {
+      final response = await _apiServices.post(
+        urlOrderProduct,
+        {
+          "link": link,
+          "gmail": mail,
+          "price": {
+            "min": min,
+            "max": max,
+          },
+        },
+        {
+          "Accept": '*/*',
+          'Content-Type': 'application/json',
+        },
+      );
+      print(response);
+    } catch (e) {
+      log('Error order product: $e');
+    }
+  }
 }

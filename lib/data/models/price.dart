@@ -3,7 +3,7 @@ import 'dart:convert';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Price {
   final String price;
-  final String date;
+  final DateTime date;
 
   const Price({
     required this.price,
@@ -20,7 +20,7 @@ class Price {
   factory Price.fromMap(Map<String, dynamic> map) {
     return Price(
       price: map['price'] as String,
-      date: map['date'] as String,
+      date: map['date'] as DateTime,
     );
   }
 

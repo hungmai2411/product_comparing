@@ -30,6 +30,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String contentChip = "Features & Details";
   List<String> chipContents = [
+    "Compare Price",
     "Features & Details",
     "Price History",
   ];
@@ -155,47 +156,49 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Compare Price',
-                            style: AppStyles.bold,
-                          ),
-                          Text(
-                            'See All',
-                            style: AppStyles.bold.copyWith(
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (state.otherPrices.isNotEmpty)
-                      ...state.otherPrices.map(
-                        (e) => GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    WebViewProductScreen(url: e!['url']),
-                              ),
-                            );
-                          },
-                          child: ItemOtherPrice(
-                            result: e,
-                          ),
-                        ),
-                      ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text(
+                    //         'Compare Price',
+                    //         style: AppStyles.bold,
+                    //       ),
+                    //       Text(
+                    //         'See All',
+                    //         style: AppStyles.bold.copyWith(
+                    //           color: AppColors.primary,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // if (state.otherPrices.isNotEmpty)
+                    //   ...state.otherPrices.map(
+                    //     (e) => GestureDetector(
+                    //       onTap: () {
+                    //         Navigator.of(context).push(
+                    //           MaterialPageRoute(
+                    //             builder: (_) =>
+                    //                 WebViewProductScreen(url: e!['url']),
+                    //           ),
+                    //         );
+                    //       },
+                    //       child: ItemOtherPrice(
+                    //         result: e,
+                    //       ),
+                    //     ),
+                    //   ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const ReceiveAlertScreen(),
+                              builder: (_) => ReceiveAlertScreen(
+                                link: widget.product.url!,
+                              ),
                             ),
                           );
                         },
@@ -228,10 +231,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    contentChip == "Features & Details"
-                        ? FeatureDetails(
-                            technicalInfo: newProduct.technicalInfo!)
-                        : const PriceHistory(),
+                    if (contentChip == 'Features & Details')
+                      newProduct.technicalInfo == null
+                          ? const SizedBox()
+                          : FeatureDetails(
+                              technicalInfo: newProduct.technicalInfo!)
+                    else if (contentChip == 'Compare Price')
+                      ...state.otherPrices.map(
+                        (e) => GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    WebViewProductScreen(url: e!['url']),
+                              ),
+                            );
+                          },
+                          child: ItemOtherPrice(
+                            result: e,
+                          ),
+                        ),
+                      )
+                    else
+                      const PriceHistory(
+                        numOfDays: 30,
+                        prices: [],
+                        month: 5,
+                      ),
                   ],
                 ),
               ),

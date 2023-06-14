@@ -15,6 +15,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc(this.productRepository) : super(SearchInitial()) {
     on<SearchSubmitted>(_onSearched);
     on<SortSubmitted>(_onSorted);
+    on<FilterSubmitted>(_onFiltered);
   }
 
   FutureOr<void> _onSearched(event, emit) async {
@@ -63,5 +64,23 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
 
     emit(SearchSuccess(products: [...products]));
+  }
+
+  FutureOr<void> _onFiltered(
+      FilterSubmitted event, Emitter<SearchState> emit) async {
+    List<Product> tmp = [];
+
+    for (var element in products) {
+      int price = 0;
+
+      price = element.discountPrice == 0
+          ? element.originalPrice!
+          : element.discountPrice!;
+      if (price >= event.min && price <= event.max) {
+        tmp.add(element);
+      }
+    }
+
+    emit(SearchSuccess(products: [...tmp]));
   }
 }

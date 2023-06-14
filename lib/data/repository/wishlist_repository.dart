@@ -1,6 +1,5 @@
 import 'package:compare_product/data/models/wishlist.dart';
 import 'package:compare_product/data/service/db_helpers.dart';
-import 'package:hive/hive.dart';
 
 class WishlistRepository {
   final DbHelper dbHelper;

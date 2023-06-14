@@ -6,6 +6,7 @@ import 'package:compare_product/presentation/routes/main_routes.dart';
 import 'package:compare_product/presentation/routes/routes.dart';
 import 'package:compare_product/presentation/screens/bottom_navigation_bar.dart/bottom_navigation_bar_screen.dart';
 import 'package:compare_product/presentation/screens/home/home_screen.dart';
+import 'package:compare_product/presentation/services/alert_bloc/alert_bloc.dart';
 import 'package:compare_product/presentation/services/product_bloc/product_bloc.dart';
 import 'package:compare_product/presentation/services/search_bloc/search_bloc.dart';
 import 'package:compare_product/presentation/services/wishlist_bloc/wishlist_bloc.dart';
@@ -51,6 +52,11 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<WishlistBloc>(
           create: (context) => WishlistBloc(
             WishlistRepository(dbHelper: DbHelper()),
+          ),
+        ),
+        BlocProvider<AlertBloc>(
+          create: (context) => AlertBloc(
+            ProductRepository(),
           ),
         ),
       ],

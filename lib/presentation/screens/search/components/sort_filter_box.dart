@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/images.dart';
 import 'package:compare_product/presentation/res/style.dart';
@@ -67,14 +65,15 @@ class SortFilterBox extends StatelessWidget {
   }
 
   void openFilterDialog(BuildContext context) async {
-    try {
-      final result = await showBottomDialog(
-        context,
-        const BoxFilter(),
-      );
-    } catch (e) {
-      log(e.toString());
-    }
+    final List<int> result = await showBottomDialog(
+      context,
+      const BoxFilter(),
+    );
+
+    context.read<SearchBloc>().add(FilterSubmitted(
+          min: result[0],
+          max: result[1],
+        ));
   }
 
   Widget itemSortFilter(String image, String name, VoidCallback onTap) {

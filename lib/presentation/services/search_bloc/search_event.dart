@@ -24,3 +24,16 @@ class SortSubmitted extends SearchEvent {
   @override
   List<Object> get props => [type];
 }
+
+class FilterSubmitted extends SearchEvent {
+  final int min;
+  final int max;
+
+  const FilterSubmitted({
+    required this.min,
+    required this.max,
+  });
+
+  @override
+  List<Object> get props => [min, max];
+}
