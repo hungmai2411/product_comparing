@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:compare_product/data/models/price.dart';
 import 'package:compare_product/data/models/product.dart';
 import 'package:compare_product/data/models/wishlist.dart';
 import 'package:compare_product/data/repository/product_repository.dart';
@@ -34,6 +35,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       newProduct =
           await productRepository.getDetailProductAtGearVN(event.product);
+
+      List<Price> prices = await productRepository.getPrices();
+
+      newProduct = newProduct.copyWith(prices: prices);
 
       log('name product: ${newProduct.name}');
 

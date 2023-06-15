@@ -3,15 +3,43 @@ import 'dart:developer';
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:compare_product/data/environment.dart';
 import 'package:compare_product/data/interfaces/i_service_api.dart';
+import 'package:compare_product/data/models/price.dart';
 import 'package:compare_product/data/models/product.dart';
 import 'package:compare_product/data/network/base_api_service.dart';
 import 'package:compare_product/data/network/network_api_service.dart';
+import 'package:compare_product/data/response/base_response.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository extends IServiceAPI {
   String urlOrderProduct =
       'https://compareproductserver-production.up.railway.app/v1/order/create/';
+  String urlGetPrices =
+      'https://compareproductserver-production.up.railway.app/v1/products/6489dfc026a043412c67c412';
   final BaseApiServices _apiServices = NetworkApiService();
+
+  Future<List<Price>> getPrices() async {
+    try {
+      final response = await _apiServices.get(
+        urlGetPrices,
+        {
+          "Accept": '*/*',
+          'Content-Type': 'application/json',
+        },
+      );
+      var pricesJson = response['prices'];
+      List<Price> prices = [];
+
+      for (var map in pricesJson) {
+        Price price = Price.fromMap(map);
+        prices.add(price);
+      }
+
+      return prices;
+    } catch (e) {
+      return [];
+    }
+  }
 
   Future<List<Product>> searchProduct(String textSearch) async {
     List<Product> productsFromGearVN = [];
@@ -40,41 +68,39 @@ class ProductRepository extends IServiceAPI {
 
   Future<List<Product>> crawlDataGearVN(String keyword) async {
     String parsedKeyword = keyword.replaceAll(" ", "%20");
-    String url = '$gearvnURL$parsedKeyword))';
+    String url =
+        'https://gearvn.com/search?type=product&q=filter=((title%3Aproduct%20**%20$parsedKeyword)%7C%7C(tag%3Aproduct%3D$parsedKeyword)%7C%7C(sku%3Aproduct**$parsedKeyword))%26%26(price%3Aproduct%3E100)';
     log("gearvn url: $url");
     List<Product> products = [];
 
     final responseFromGearVN = await http.get(Uri.parse(url));
 
     final soup = BeautifulSoup(responseFromGearVN.body);
-    final items = soup.findAll('div',
-        class_: 'col-sm-4 col-xs-12 padding-none col-fix20');
+    final items =
+        soup.findAll('div', class_: 'col-xl-3 col-lg-3 col-6 proloop');
 
     for (var item in items) {
-      final urlTag = item.find('div', class_: "product-row-img");
-      final url = urlTag!.a!['href'];
-      final name = item.find('h2', class_: 'product-row-name')?.text ?? '';
+      final urlTag = item.find('a', class_: "aspect-ratio fade-box");
+      final url = urlTag!['href'];
+      final name = item.find('h3', class_: 'proloop-name')?.a!['title'] ?? '';
 
-      final imageTag = item.find(
-        'img',
-        class_: 'product-row-thumbnail',
-      );
+      final imageTag = item.find('picture', class_: 'has-hover')!.children[0];
 
-      final imgUrl = 'https:${imageTag!['src']!}';
+      final imgUrl = 'https:${imageTag['data-srcset']!}';
 
-      final priceTags = item.find('div', class_: 'product-row-price pull-left');
+      final priceTags = item.find('div', class_: 'proloop-price');
 
       String originalPrice, discountPrice;
 
-      if (priceTags!.children.length > 2) {
+      if (priceTags!.children.length == 2) {
         originalPrice = priceTags.children[0].text;
-        discountPrice = priceTags.children[2].text;
+        discountPrice = priceTags.children[1].text;
       } else {
-        originalPrice = priceTags.children[1].text;
+        originalPrice = priceTags.children[0].text;
         discountPrice = "";
       }
 
-      originalPrice = originalPrice.replaceAll(',', '');
+      originalPrice = originalPrice.replaceAll('.', '');
 
       int index = originalPrice.indexOf("₫");
 
@@ -82,7 +108,7 @@ class ProductRepository extends IServiceAPI {
       int newDiscountPrice = 0;
 
       if (discountPrice.isNotEmpty) {
-        discountPrice = discountPrice.replaceAll(',', '');
+        discountPrice = discountPrice.replaceAll('.', '');
 
         int index = discountPrice.indexOf("₫");
 
@@ -385,9 +411,9 @@ class ProductRepository extends IServiceAPI {
         technicalInfo[key] = value;
       }
 
-      final differentInfoTags = soup.find("div", id: "chitiet");
+      // final differentInfoTags = soup.find("div", id: "chitiet");
 
-      for (int i = 3; i < differentInfoTags!.contents.length; i++) {}
+      // for (int i = 3; i < differentInfoTags!.contents.length; i++) {}
 
       product = product.copyWith(
         technicalInfo: technicalInfo,

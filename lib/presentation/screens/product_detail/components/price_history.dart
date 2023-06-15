@@ -130,7 +130,7 @@ class PriceHistory extends StatelessWidget {
         continue;
       }
 
-      spots.insert(i, FlSpot(x, double.parse(price.price)));
+      spots.insert(i, FlSpot(x, price.price / 20000000));
       dayTmp = dayCreated;
       i++;
     }

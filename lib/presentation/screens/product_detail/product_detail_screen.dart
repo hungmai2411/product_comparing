@@ -253,9 +253,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       )
                     else
-                      const PriceHistory(
+                      PriceHistory(
                         numOfDays: 30,
-                        prices: [],
+                        prices: state.newProduct.prices!,
                         month: 5,
                       ),
                   ],

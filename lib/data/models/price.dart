@@ -2,7 +2,7 @@ import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class Price {
-  final String price;
+  final int price;
   final DateTime date;
 
   const Price({
@@ -19,8 +19,8 @@ class Price {
 
   factory Price.fromMap(Map<String, dynamic> map) {
     return Price(
-      price: map['price'] as String,
-      date: map['date'] as DateTime,
+      price: map['price'] as int,
+      date: DateTime.parse(map['date'] as String),
     );
   }
 
