@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:compare_product/presentation/enum/enum.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/screens/home/home_screen.dart';
+import 'package:compare_product/presentation/screens/voucher/voucher_screen.dart';
 import 'package:compare_product/presentation/screens/wish_list/wish_list_screen.dart';
 import 'package:compare_product/presentation/services/bottom_navigation_bloc/cubit/navigation_cubit.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
         if (state.navBarItem == NavBarItem.home) {
           return HomeScreen();
         } else if (state.navBarItem == NavBarItem.vouchers) {
-          return Container();
+          return VoucherScreen();
         } else if (state.navBarItem == NavBarItem.wishlist) {
           return WishListScreen();
         }

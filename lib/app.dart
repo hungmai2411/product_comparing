@@ -1,4 +1,5 @@
 import 'package:compare_product/data/repository/product_repository.dart';
+import 'package:compare_product/data/repository/voucher_repository.dart';
 import 'package:compare_product/data/repository/wishlist_repository.dart';
 import 'package:compare_product/data/service/db_helpers.dart';
 import 'package:compare_product/presentation/res/colors.dart';
@@ -9,6 +10,7 @@ import 'package:compare_product/presentation/screens/home/home_screen.dart';
 import 'package:compare_product/presentation/services/alert_bloc/alert_bloc.dart';
 import 'package:compare_product/presentation/services/product_bloc/product_bloc.dart';
 import 'package:compare_product/presentation/services/search_bloc/search_bloc.dart';
+import 'package:compare_product/presentation/services/voucher_bloc/voucher_bloc.dart';
 import 'package:compare_product/presentation/services/wishlist_bloc/wishlist_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +59,11 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AlertBloc>(
           create: (context) => AlertBloc(
             ProductRepository(),
+          ),
+        ),
+        BlocProvider<VoucherBloc>(
+          create: (context) => VoucherBloc(
+            VoucherRepository(),
           ),
         ),
       ],

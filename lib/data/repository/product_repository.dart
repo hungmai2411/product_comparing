@@ -399,7 +399,6 @@ class ProductRepository extends IServiceAPI {
       final response = await http.get(Uri.parse(product.url!));
       final soup = BeautifulSoup(response.body);
 
-      //final imagesTag = soup.find("div", class_: "fotorama__nav__shaft");
       final technicalInfoTags = soup.findAll("tr", class_: "row-info");
       Map<String, String> technicalInfo = <String, String>{};
 
@@ -410,10 +409,6 @@ class ProductRepository extends IServiceAPI {
         String value = tagValue.text;
         technicalInfo[key] = value;
       }
-
-      // final differentInfoTags = soup.find("div", id: "chitiet");
-
-      // for (int i = 3; i < differentInfoTags!.contents.length; i++) {}
 
       product = product.copyWith(
         technicalInfo: technicalInfo,
