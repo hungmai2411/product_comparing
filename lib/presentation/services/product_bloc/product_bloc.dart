@@ -36,7 +36,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       newProduct =
           await productRepository.getDetailProductAtGearVN(event.product);
 
-      List<Price> prices = await productRepository.getPrices();
+      List<Price> prices = await productRepository.getPrices(
+        event.product.name,
+        DateTime.now().month,
+        DateTime.now().year,
+      );
 
       newProduct = newProduct.copyWith(prices: prices);
 

@@ -15,19 +15,21 @@ class ProductRepository extends IServiceAPI {
   String urlOrderProduct =
       'https://compareproductserver-production.up.railway.app/v1/order/create/';
   String urlGetPrices =
-      'https://compareproductserver-production.up.railway.app/v1/products/6489dfc026a043412c67c412';
+      'https://compareproductserver-production.up.railway.app/v1/products/';
   final BaseApiServices _apiServices = NetworkApiService();
 
-  Future<List<Price>> getPrices() async {
+  Future<List<Price>> getPrices(String name, int month, int year) async {
+    String parsedName = name.replaceAll('/', '%2F');
+
     try {
       final response = await _apiServices.get(
-        urlGetPrices,
+        '$urlGetPrices$parsedName/month=$month/year=$year',
         {
           "Accept": '*/*',
           'Content-Type': 'application/json',
         },
       );
-      var pricesJson = response['prices'];
+      var pricesJson = response;
       List<Price> prices = [];
 
       for (var map in pricesJson) {

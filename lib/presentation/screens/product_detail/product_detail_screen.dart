@@ -156,40 +156,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text(
-                    //         'Compare Price',
-                    //         style: AppStyles.bold,
-                    //       ),
-                    //       Text(
-                    //         'See All',
-                    //         style: AppStyles.bold.copyWith(
-                    //           color: AppColors.primary,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    // if (state.otherPrices.isNotEmpty)
-                    //   ...state.otherPrices.map(
-                    //     (e) => GestureDetector(
-                    //       onTap: () {
-                    //         Navigator.of(context).push(
-                    //           MaterialPageRoute(
-                    //             builder: (_) =>
-                    //                 WebViewProductScreen(url: e!['url']),
-                    //           ),
-                    //         );
-                    //       },
-                    //       child: ItemOtherPrice(
-                    //         result: e,
-                    //       ),
-                    //     ),
-                    //   ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: GestureDetector(
@@ -254,9 +220,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       )
                     else
                       PriceHistory(
-                        numOfDays: 30,
+                        numOfDays: 31,
                         prices: state.newProduct.prices!,
-                        month: 5,
+                        month: 7,
                       ),
                   ],
                 ),

@@ -26,7 +26,7 @@ class VoucherBloc extends Bloc<VoucherEvent, VoucherState> {
           await _voucherRepository.getVouchersAtPhongVu();
 
       emit(VoucherSuccess(
-          vouchers: [...vouchersFromPhongVu, ...vouchersFromGearVN]));
+          vouchers: [...vouchersFromGearVN, ...vouchersFromPhongVu]));
     } catch (e) {
       emit(VoucherFailure(errorMessage: e.toString()));
     }
