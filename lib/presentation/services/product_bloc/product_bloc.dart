@@ -38,7 +38,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       List<Price> prices = await productRepository.getPrices(
         event.product.name,
-        DateTime.now().month,
+        6,
         DateTime.now().year,
       );
 

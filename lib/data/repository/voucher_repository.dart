@@ -31,11 +31,13 @@ class VoucherRepository extends IServiceAPI {
           voucher = voucher.copyWith(
             title: name,
             thumbnail: image,
+            link: item.a == null ? '' : item.a!['href'],
           );
           vouchers.add(voucher);
         }
       }
 
+      vouchers.removeAt(0);
       return vouchers;
     } catch (e) {
       log(e.toString());
@@ -50,29 +52,38 @@ class VoucherRepository extends IServiceAPI {
       final responseFromPhongVu = await http.get(Uri.parse(url));
 
       final soup = BeautifulSoup(responseFromPhongVu.body);
-      final items = soup.findAll("div", class_: "bg-lazy css-odz4ex");
+      final item = soup.find("div", class_: "teko-col css-1ezrukj");
       List<Voucher> vouchers = [];
-      int i = 0;
+      Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
+      var title = item!.a!['href'];
+      var link = item.a!['href'];
+      voucher = voucher.copyWith(
+        title: item.p!.text,
+        thumbnail: item.img!['src'],
+        link: link,
+      );
+      vouchers.add(voucher);
+      // int i = 0;
+//Green Flag Đầy Mình - Săn Laptop Vượt Trình
+      // for (var item in items) {
+      //   if (i > 2) {
+      //     for (var itemPromo in item.children) {
+      //       for (var promo in itemPromo.children) {
+      //         Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
+      //         var title = promo.find("div", class_: " css-1qdppk0");
+      //         var link = promo.a != null ? promo.a!['href'] : '';
+      //         voucher = voucher.copyWith(
+      //           title: title!.text,
+      //           thumbnail: promo.img != null ? promo.img!['src'] : '',
+      //           link: link,
+      //         );
 
-      for (var item in items) {
-        if (i > 2) {
-          for (var itemPromo in item.children) {
-            for (var promo in itemPromo.children) {
-              Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
-              var title = promo.find("div", class_: " css-1qdppk0");
-              var link = promo.a != null ? promo.a!['href'] : '';
-              voucher = voucher.copyWith(
-                title: title!.text,
-                thumbnail: promo.img != null ? promo.img!['src'] : '',
-                link: link,
-              );
-
-              vouchers.add(voucher);
-            }
-          }
-        }
-        i++;
-      }
+      //         vouchers.add(voucher);
+      //       }
+      //     }
+      //   }
+      //   i++;
+      // }
 
       return vouchers;
     } catch (e) {

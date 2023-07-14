@@ -2,6 +2,7 @@ import 'package:compare_product/data/models/wishlist.dart';
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/dimensions.dart';
 import 'package:compare_product/presentation/res/style.dart';
+import 'package:compare_product/presentation/screens/web_view/web_view_product_screen.dart';
 import 'package:compare_product/presentation/screens/wish_list/components/item_wishlist.dart';
 import 'package:compare_product/presentation/services/wishlist_bloc/wishlist_bloc.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,14 @@ class _WishListScreenState extends State<WishListScreen> {
                       itemBuilder: (context, index) {
                         Wishlist wishlist = wishlists[index];
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    WebViewProductScreen(url: wishlist.url),
+                              ),
+                            );
+                          },
                           child: ItemWishlist(wishlist: wishlist),
                         );
                       },

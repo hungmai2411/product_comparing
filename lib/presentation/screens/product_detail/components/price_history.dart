@@ -115,7 +115,7 @@ class PriceHistory extends StatelessWidget {
                           return FlDotCirclePainter(
                             color: Colors.white,
                             radius: 2,
-                            strokeWidth: 2,
+                            strokeWidth: 1,
                             strokeColor: const Color(0xFF2699E2),
                           );
                         },
