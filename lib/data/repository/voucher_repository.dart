@@ -52,38 +52,53 @@ class VoucherRepository extends IServiceAPI {
       final responseFromPhongVu = await http.get(Uri.parse(url));
 
       final soup = BeautifulSoup(responseFromPhongVu.body);
-      final item = soup.find("div", class_: "teko-col css-1ezrukj");
       List<Voucher> vouchers = [];
-      Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
-      var title = item!.a!['href'];
-      var link = item.a!['href'];
-      voucher = voucher.copyWith(
-        title: item.p!.text,
-        thumbnail: item.img!['src'],
-        link: link,
-      );
-      vouchers.add(voucher);
-      // int i = 0;
-//Green Flag Đầy Mình - Săn Laptop Vượt Trình
-      // for (var item in items) {
-      //   if (i > 2) {
-      //     for (var itemPromo in item.children) {
-      //       for (var promo in itemPromo.children) {
-      //         Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
-      //         var title = promo.find("div", class_: " css-1qdppk0");
-      //         var link = promo.a != null ? promo.a!['href'] : '';
-      //         voucher = voucher.copyWith(
-      //           title: title!.text,
-      //           thumbnail: promo.img != null ? promo.img!['src'] : '',
-      //           link: link,
-      //         );
 
-      //         vouchers.add(voucher);
-      //       }
-      //     }
-      //   }
-      //   i++;
-      // }
+      final items = soup.findAll("div", class_: "teko-col css-1ezrukj");
+      // final item = soup.find("div", class_: "teko-col css-1ezrukj");
+      // Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
+      // var title = item!.a!['href'];
+      // var link = item.a!['href'];
+      // voucher = voucher.copyWith(
+      //   title: item.p!.text,
+      //   thumbnail: item.img!['src'],
+      //   link: link,
+      // );
+      // vouchers.add(voucher);
+      int i = 0;
+      for (var item in items) {
+        var tag = item.find("div", class_: " css-en1t8p");
+        var title = tag != null ? tag.text : '';
+        var link = item.a != null ? item.a!['href'] : '';
+        var thumbnail = item.img != null ? item.img!['src'] : '';
+        Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
+
+        voucher = voucher.copyWith(
+          title: title,
+          thumbnail: thumbnail,
+          link: link,
+        );
+
+        if (title.isNotEmpty || link!.isNotEmpty || thumbnail!.isNotEmpty) {
+          vouchers.add(voucher);
+        }
+        // for (var itemPromo in item.children) {
+        //   for (var promo in itemPromo.children) {
+        //     Voucher voucher = Voucher(thumbnail: '', title: '', link: '');
+        //     var title = promo.find("div", class_: " css-en1t8p");
+        //     if (title != null) {
+        //       var link = promo.a != null ? promo.a!['href'] : '';
+        //       voucher = voucher.copyWith(
+        //         title: title.text,
+        //         thumbnail: promo.img != null ? promo.img!['src'] : '',
+        //         link: link,
+        //       );
+
+        //       vouchers.add(voucher);
+        //     }
+        //   }
+        // }
+      }
 
       return vouchers;
     } catch (e) {

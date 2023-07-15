@@ -2,6 +2,9 @@ import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/style.dart';
 import 'package:compare_product/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../services/search_bloc/search_bloc.dart';
 
 class BoxSort extends StatefulWidget {
   const BoxSort({super.key});
@@ -12,8 +15,15 @@ class BoxSort extends StatefulWidget {
 
 class _BoxSortState extends State<BoxSort> {
   String itemChecked = '';
+  SearchBloc get _bloc => BlocProvider.of<SearchBloc>(context);
 
   final List<String> sorts = ['Lowest Price', 'Highest Price'];
+
+  @override
+  void initState() {
+    super.initState();
+    itemChecked = _bloc.sort;
+  }
 
   @override
   Widget build(BuildContext context) {

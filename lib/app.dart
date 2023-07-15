@@ -1,3 +1,4 @@
+import 'package:compare_product/data/repository/notification_repository.dart';
 import 'package:compare_product/data/repository/product_repository.dart';
 import 'package:compare_product/data/repository/voucher_repository.dart';
 import 'package:compare_product/data/repository/wishlist_repository.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<VoucherBloc>(
           create: (context) => VoucherBloc(
             VoucherRepository(),
+            NotificationRepository(),
           ),
         ),
       ],

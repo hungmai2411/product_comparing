@@ -28,7 +28,7 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  String contentChip = "Features & Details";
+  String contentChip = "Compare Price";
   List<String> chipContents = [
     "Compare Price",
     "Features & Details",
@@ -219,10 +219,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ),
                       )
                     else
-                      PriceHistory(
-                        numOfDays: 31,
-                        prices: state.newProduct.prices!,
-                        month: 7,
+                      Expanded(
+                        child: PriceHistory(
+                          numOfDays: 31,
+                          prices: state.newProduct.prices!,
+                          month: 7,
+                        ),
                       ),
                   ],
                 ),

@@ -12,14 +12,27 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   List<Product> products = [];
 
-  SearchBloc(this.productRepository) : super(SearchInitial()) {
+  String sort = 'Lowest Price';
+  int min = 0;
+  int max = 110000000;
+
+  SearchBloc(this.productRepository)
+      : super(const SearchInitial(
+          sort: 'Lowest Price',
+          min: 0,
+          max: 110000000,
+        )) {
     on<SearchSubmitted>(_onSearched);
     on<SortSubmitted>(_onSorted);
     on<FilterSubmitted>(_onFiltered);
   }
 
   FutureOr<void> _onSearched(event, emit) async {
-    emit(SearchLoading());
+    emit(SearchLoading(
+      sort: sort,
+      min: min,
+      max: max,
+    ));
 
     try {
       List<Product> result =
@@ -27,14 +40,29 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       products = result;
 
-      emit(SearchSuccess(products: products));
+      emit(SearchSuccess(
+        products: products,
+        sort: sort,
+        min: min,
+        max: max,
+      ));
     } catch (e) {
-      emit(SearchFail(error: e.toString()));
+      emit(SearchFail(
+        error: e.toString(),
+        sort: sort,
+        min: min,
+        max: max,
+      ));
     }
   }
 
   FutureOr<void> _onSorted(SortSubmitted event, Emitter<SearchState> emit) {
-    emit(SearchLoading());
+    sort = event.type;
+    emit(SearchLoading(
+      sort: sort,
+      min: min,
+      max: max,
+    ));
     if (event.type == 'Lowest Price') {
       products.sort((product1, product2) {
         int tmp1, tmp2 = 0;
@@ -63,11 +91,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       });
     }
 
-    emit(SearchSuccess(products: [...products]));
+    emit(SearchSuccess(
+      products: [
+        ...products,
+      ],
+      sort: sort,
+      min: min,
+      max: max,
+    ));
   }
 
   FutureOr<void> _onFiltered(
       FilterSubmitted event, Emitter<SearchState> emit) async {
+    min = event.min;
+    max = event.max;
     List<Product> tmp = [];
 
     for (var element in products) {
@@ -81,6 +118,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
     }
 
-    emit(SearchSuccess(products: [...tmp]));
+    emit(SearchSuccess(
+      products: [...tmp],
+      sort: sort,
+      min: min,
+      max: max,
+    ));
   }
 }

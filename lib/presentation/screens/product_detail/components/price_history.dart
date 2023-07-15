@@ -19,6 +19,8 @@ class PriceHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var maxOfY = findMaxPrice(prices);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
@@ -40,7 +42,7 @@ class PriceHistory extends StatelessWidget {
               children: [
                 Text('Highest ', style: AppStyles.medium),
                 Text(
-                  findMaxPrice(prices).toMoney,
+                  maxOfY.toMoney,
                   style: AppStyles.medium.copyWith(color: AppColors.primary),
                 )
               ],
@@ -90,7 +92,7 @@ class PriceHistory extends StatelessWidget {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        interval: 1,
+                        //interval: 1,
                         getTitlesWidget: leftTitleWidgets,
                         reservedSize: 42,
                       ),
@@ -110,7 +112,7 @@ class PriceHistory extends StatelessWidget {
                   lineBarsData: [
                     LineChartBarData(
                       dotData: FlDotData(
-                        show: true,
+                        show: false,
                         getDotPainter: (p0, p1, p2, p3) {
                           return FlDotCirclePainter(
                             color: Colors.white,
@@ -159,17 +161,30 @@ class PriceHistory extends StatelessWidget {
     int dayTmp = 0;
     int i = 0;
 
+    pricesMonth.sort((price1, price2) {
+      DateTime dateTime1 = price1.date;
+      DateTime dateTime2 = price2.date;
+
+      return dateTime1.compareTo(dateTime2);
+    });
     for (Price price in pricesMonth) {
       int dayCreated = price.date.day;
 
       double x = dayCreated / 5 - 0.2;
-      //double y = diary.getIndex();
 
       if (dayTmp == dayCreated) {
         continue;
       }
 
-      spots.insert(i, FlSpot(x, price.price / 20000000));
+      //List<int> values = [1, 5, 10, 15, 20, 25, 30];
+
+      //if (values.contains(dayCreated)) {
+      spots.add(FlSpot(x, price.price / 8000000));
+      //}
+
+      // if (i == 5) {
+      //   break;
+      // }
       dayTmp = dayCreated;
       i++;
     }
@@ -216,14 +231,31 @@ class PriceHistory extends StatelessWidget {
   }
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
-    List<String> prices = ['0', '20 ml', '40 ml', '60 ml', '80 ml', '100 ml'];
-
+    String result = '0';
+    var max = findMaxPrice(prices);
+    if (value == 0) {
+      result = '0.0';
+    } else {
+      result = fomatMonney(value * max / 5);
+    }
     return Text(
-      prices[value.toInt()],
+      result,
       style: AppStyles.regular.copyWith(
         fontSize: 12,
         color: AppColors.text,
       ),
     );
+  }
+
+  String fomatMonney(double money) {
+    if (money > 1000000000) {
+      return '${(money / 1000000000).toStringAsFixed(1)}B';
+    } else if (money > 1000000) {
+      return '${(money / 1000000).toStringAsFixed(1)}M';
+    } else if (money > 1000) {
+      return '${(money / 1000).toStringAsFixed(1)}K';
+    } else {
+      return money.toStringAsFixed(1);
+    }
   }
 }

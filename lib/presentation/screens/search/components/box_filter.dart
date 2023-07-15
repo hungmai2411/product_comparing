@@ -1,8 +1,10 @@
 import 'package:compare_product/presentation/res/colors.dart';
 import 'package:compare_product/presentation/res/style.dart';
+import 'package:compare_product/presentation/services/search_bloc/search_bloc.dart';
 import 'package:compare_product/presentation/utils/money_extension.dart';
 import 'package:compare_product/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BoxFilter extends StatefulWidget {
   const BoxFilter({super.key});
@@ -13,6 +15,17 @@ class BoxFilter extends StatefulWidget {
 
 class _BoxFilterState extends State<BoxFilter> {
   RangeValues priceRange = const RangeValues(0, 110000000);
+  late RangeValues selectedPriceRange;
+
+  SearchBloc get _bloc => BlocProvider.of<SearchBloc>(context);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedPriceRange =
+        RangeValues(_bloc.min.toDouble(), _bloc.max.toDouble());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +46,9 @@ class _BoxFilterState extends State<BoxFilter> {
           const SizedBox(height: 10),
           Row(
             children: [
-              boxMoney(priceRange.start.round()),
+              boxMoney(selectedPriceRange.start.round()),
               const SizedBox(width: 10),
-              boxMoney(priceRange.end.round()),
+              boxMoney(selectedPriceRange.end.round()),
             ],
           ),
           SizedBox(
@@ -44,12 +57,12 @@ class _BoxFilterState extends State<BoxFilter> {
             child: RangeSlider(
               min: 0,
               max: 110000000,
-              values: priceRange,
+              values: selectedPriceRange,
               activeColor: AppColors.primary,
               onChanged: (RangeValues values) {
                 if (mounted) {
                   setState(() {
-                    priceRange = values;
+                    selectedPriceRange = values;
                   });
                 }
               },
@@ -60,8 +73,8 @@ class _BoxFilterState extends State<BoxFilter> {
             margin: 0,
             onTap: () {
               Navigator.pop(context, [
-                priceRange.start.round(),
-                priceRange.end.round(),
+                selectedPriceRange.start.round(),
+                selectedPriceRange.end.round(),
               ]);
             },
           ),

@@ -33,7 +33,9 @@ class ItemOtherPrice extends StatelessWidget {
                           const BoxDecoration(color: AppColors.secondary),
                       child: Center(
                         child: Text(
-                          (result!['price'] as int).toMoney,
+                          result != null
+                              ? (result?['price'] as int).toMoney
+                              : '0',
                           style: AppStyles.semibold,
                         ),
                       ),

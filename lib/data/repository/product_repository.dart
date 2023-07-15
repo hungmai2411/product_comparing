@@ -12,8 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ProductRepository extends IServiceAPI {
-  String urlOrderProduct =
-      'https://compareproductserver-production.up.railway.app/v1/order/create/';
+  String urlOrderProduct = 'http://192.168.1.79:8080/v1/order/create/';
   String urlGetPrices =
       'https://compareproductserver-production.up.railway.app/v1/products/';
   final BaseApiServices _apiServices = NetworkApiService();

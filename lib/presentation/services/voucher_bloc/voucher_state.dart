@@ -22,9 +22,13 @@ class VoucherFailure extends VoucherState {
 
 class VoucherSuccess extends VoucherState {
   final List<Voucher> vouchers;
+  final List<Notification> notifications;
 
-  const VoucherSuccess({required this.vouchers});
+  const VoucherSuccess({
+    required this.vouchers,
+    required this.notifications,
+  });
 
   @override
-  List<Object> get props => [vouchers];
+  List<Object> get props => [vouchers, notifications];
 }

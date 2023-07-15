@@ -1,4 +1,4 @@
-package com.example.compare_product
+package com.compare_product
 
 import io.flutter.embedding.android.FlutterActivity
 
